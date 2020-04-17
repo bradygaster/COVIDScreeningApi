@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger/v1/swagger.json",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "VaultUri": "https://covid-api-vault.vault.azure.net/",
@@ -22,7 +22,7 @@
     "COVIDScreeningApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger/v1/swagger.json",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "VaultUri": "https://covid-api-vault.vault.azure.net/",
