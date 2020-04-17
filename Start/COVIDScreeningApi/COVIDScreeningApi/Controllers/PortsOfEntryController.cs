@@ -17,7 +17,15 @@ namespace COVIDScreeningApi.Controllers
         [HttpGet]
         public IEnumerable<PortsOfEntry> Get()
         {
-            return new List<PortsOfEntry>();
+            return new List<PortsOfEntry>(new PortsOfEntry[]
+            {
+                new PortsOfEntry { ItemsLabels = "Peace Arch Border", ItemsLatitudes = 49.001453, ItemsLongitudes = -122.736694},
+                new PortsOfEntry { ItemsLabels = "Jefferson County International Airport", ItemsLatitudes = 48.108032, ItemsLongitudes = -122.774895},
+                new PortsOfEntry { ItemsLabels = "Fairfield International Airport", ItemsLatitudes = 48.116325, ItemsLongitudes = -123.493484},
+                new PortsOfEntry { ItemsLabels = "Grant County International Airport", ItemsLatitudes = 47.189873, ItemsLongitudes = -119.323608},
+                new PortsOfEntry { ItemsLabels = "Spokane International Airport", ItemsLatitudes = 47.625526, ItemsLongitudes = -117.536163},
+                new PortsOfEntry { ItemsLabels = "Seattle Airport", ItemsLatitudes = 47.443760, ItemsLongitudes = -122.302202},
+            });
         }
 
         // GET api/<PortsOfEntryController>/5

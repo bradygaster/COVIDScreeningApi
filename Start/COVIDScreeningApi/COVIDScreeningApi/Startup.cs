@@ -29,6 +29,7 @@ namespace COVIDScreeningApi
             services.AddControllers();
             services.AddSwaggerGen(config =>
             {
+                config.DocumentFilter<DefaultWebHostNameDocumentFilter>(Configuration);
                 config.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "COVIDScreeningApi",
