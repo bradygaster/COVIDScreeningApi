@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace COVIDScreeningApi
 {
@@ -58,6 +59,27 @@ namespace COVIDScreeningApi
             {
                 endpoints.MapControllers();
             });
+        }
+    }
+
+    internal class DefaultWebHostNameDocumentFilter : IDocumentFilter
+    {
+        public DefaultWebHostNameDocumentFilter(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            swaggerDoc.Servers = new List<OpenApiServer>()
+                {
+                    new OpenApiServer()
+                    {
+                        Url = Configuration["SwaggerBaseUrl"]
+                    }
+                };
         }
     }
 }
