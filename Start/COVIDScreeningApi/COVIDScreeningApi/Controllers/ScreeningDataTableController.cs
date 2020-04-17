@@ -38,11 +38,5 @@ namespace COVIDScreeningApi.Controllers
         public void Put(int id, [FromBody] ScreeningDataTable value)
         {
         }
-
-        // DELETE api/<ScreeningDataTableController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

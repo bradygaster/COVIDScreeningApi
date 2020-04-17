@@ -38,11 +38,5 @@ namespace COVIDScreeningApi.Controllers
         public void Put(int id, [FromBody] PortsOfEntry value)
         {
         }
-
-        // DELETE api/<PortsOfEntryController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
