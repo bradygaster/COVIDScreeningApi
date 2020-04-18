@@ -12,17 +12,21 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger/v1/swagger.json",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://covid-api-vault.vault.azure.net/",
+        "AZURE_USERNAME": "bradyg@microsoft.com"
       }
     },
     "COVIDScreeningApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger/v1/swagger.json",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://covid-api-vault.vault.azure.net/",
+        "AZURE_USERNAME": "bradyg@microsoft.com"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
@@ -31,7 +35,11 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "environmentVariables": {
+        "VaultUri": "https://covid-api-vault.vault.azure.net/",
+        "AZURE_USERNAME": "bradyg@microsoft.com"
+      }
     }
   }
 }

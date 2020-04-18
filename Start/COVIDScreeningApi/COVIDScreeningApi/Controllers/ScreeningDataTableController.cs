@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace COVIDScreeningApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ScreeningDataTableController : ControllerBase
     {
@@ -36,12 +36,6 @@ namespace COVIDScreeningApi.Controllers
         // PUT api/<ScreeningDataTableController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] ScreeningDataTable value)
-        {
-        }
-
-        // DELETE api/<ScreeningDataTableController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
         {
         }
     }
