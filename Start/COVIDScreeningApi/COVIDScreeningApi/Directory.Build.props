@@ -64,17 +64,6 @@
     <OnError ExecuteTargets="InformCustomerHowToOverrideSwaggerDocName"/>
   </Target>
 
-  <!-- cleanup the Swashbuckle CLI dependencies -->
-  <Target Name="CleanUpAfterSwaggerGeneration" 
-          AfterTargets="CreateSwaggerFile,InformCustomerHowToOverrideSwaggerDocName">
-    <!-- uninstall the Swashbuckle CLI, as it is no longer needed -->
-    <Exec Command="dotnet tool uninstall Swashbuckle.AspNetCore.Cli &gt;&gt; swagger-log.txt" />
-    <!-- delete the log file of our swagger-file-creation process -->
-    <Delete Files="swagger-log.txt" />
-    <!-- remove the tool manifest if we created it -->
-    <RemoveDir Directories=".config" Condition="!$(ToolManifestExists)"/>
-  </Target>
-
   <!-- 
     In the case that the customer isn't using "v1" as the Open API doc, 
     we need to tell them how to mitigate it. 
@@ -82,6 +71,17 @@
   <Target Name="InformCustomerHowToOverrideSwaggerDocName">
     <Message Importance="High" 
              Text="Tell the customers how to unbreak themselves here by setting the 'OpenApiDocumentName' property in their .csproj file to override the default."/>
+    <CallTarget Targets="CleanUpAfterSwaggerGeneration"/>
+  </Target>
+
+  <!-- cleanup the Swashbuckle CLI dependencies -->
+  <Target Name="CleanUpAfterSwaggerGeneration" AfterTargets="CreateSwaggerFile">
+    <!-- uninstall the Swashbuckle CLI, as it is no longer needed -->
+    <Exec Command="dotnet tool uninstall Swashbuckle.AspNetCore.Cli &gt;&gt; swagger-log.txt" />
+    <!-- delete the log file of our swagger-file-creation process -->
+    <Delete Files="swagger-log.txt" />
+    <!-- remove the tool manifest if we created it -->
+    <RemoveDir Directories=".config" Condition="!$(ToolManifestExists)"/>
   </Target>
 
 </Project>
