@@ -31,11 +31,12 @@ namespace COVIDScreeningApi
             services.AddSwaggerGen(config =>
             {
                 config.DocumentFilter<DefaultWebHostNameDocumentFilter>(Configuration);
-                config.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "COVIDScreeningApi",
-                    Version = "v1"
-                });
+                config.SwaggerDoc("ScreeningApiV1", 
+                    new OpenApiInfo
+                    {
+                        Title = "COVIDScreeningApi",
+                        Version = "v1"
+                    });
             });
         }
 
