@@ -39,7 +39,7 @@
   </PropertyGroup>
 
   <!-- ascertain if the customer already has any custom tools -->
-  <Target Name="CheckForManifestFile" AfterTargets="Build">
+  <Target Name="CheckForManifestFile" AfterTargets="Publish">
     <CreateProperty Value="true" Condition="Exists('.config/dotnet-tools.json')">
       <Output TaskParameter="Value" PropertyName="ToolManifestExists"/>
     </CreateProperty>

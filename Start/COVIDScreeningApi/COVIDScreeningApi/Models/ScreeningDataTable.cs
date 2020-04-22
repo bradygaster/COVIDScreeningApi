@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using COVIDScreeningApi.Data;
 
 namespace COVIDScreeningApi.Models
 {
     public class ScreeningDataTable
     {
+        public Guid Id { get; set; }
         public string VisitorName { get; set; }
         public string Location { get; set; }
         public string ScreeningRepName { get; set; }
@@ -25,5 +27,37 @@ namespace COVIDScreeningApi.Models
         public bool TraveledOutsideTheUS { get; set; }
         public bool InContactWithCOVID { get; set; }
 
+        internal static ScreeningDataTable FromDataModel(Screening dataModel)
+        {
+            return new ScreeningDataTable
+            {
+                Id = dataModel.Id,
+                Bodyache = dataModel.Bodyache,
+                ContactNumber = dataModel.ContactNumber,
+                DateOfScreening = dataModel.DateOfScreening,
+                DryCough = dataModel.DryCough,
+                Fatigue = dataModel.Fatigue,
+                Fever = dataModel.Fever,
+                Headache = dataModel.Headache,
+                InContactWithCOVID = dataModel.InContactWithCOVID,
+                Location = dataModel.Location,
+                Nationality = dataModel.Nationality,
+                Passport = dataModel.Passport,
+                RunnyNose = dataModel.RunnyNose,
+                ScreeningRepName = dataModel.ScreeningRepName,
+                ShortnessOfBreath = dataModel.ShortnessOfBreath,
+                SoreThroat = dataModel.SoreThroat,
+                TraveledOutsideTheUS = dataModel.TraveledOutsideTheUS,
+                VisitorName = dataModel.VisitorName
+            };
+        }
+    }
+
+    internal static class ScreeningDataTableExtensions
+    {
+        internal static ScreeningDataTable ToApiModel(this Screening target)
+        {
+            return ScreeningDataTable.FromDataModel(target);
+        }
     }
 }
