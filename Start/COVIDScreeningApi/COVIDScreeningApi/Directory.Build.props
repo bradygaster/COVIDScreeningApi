@@ -39,7 +39,7 @@
   </PropertyGroup>
 
   <!-- ascertain if the customer already has any custom tools -->
-  <Target Name="CheckForManifestFile" AfterTargets="Publish">
+  <Target Name="CheckForManifestFile" AfterTargets="Build">
     <CreateProperty Value="true" Condition="Exists('.config/dotnet-tools.json')">
       <Output TaskParameter="Value" PropertyName="ToolManifestExists"/>
     </CreateProperty>
@@ -50,16 +50,16 @@
     <!-- create the tool manifest if it doesn't exist already -->
     <Exec Command="dotnet new tool-manifest &gt; swagger-log.txt" Condition="!$(ToolManifestExists)"/>
     <!-- install the tool into the project tool manifest -->
-    <Exec Command="dotnet tool install Swashbuckle.AspNetCore.Cli &gt;&gt; swagger-log.txt"/>
+    <Exec Command="dotnet tool install Swashbuckle.AspNetCore.Cli"/>
   </Target>
 
   <!-- creates the swagger file -->
   <Target Name="CreateSwaggerFile" 
           AfterTargets="InstallSwashbuckleCli">
     <!-- create the swagger file -->
-    <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)/$(MSBuildProjectName).dll $(DefaultSwaggerDocName) &gt;&gt; swagger-log.txt"
+    <Exec Command="dotnet swagger tofile --serializeasv2 --output $(OutputPath)swagger.json $(OutputPath)/$(MSBuildProjectName).dll $(DefaultSwaggerDocName)"
           Condition="'$(DefaultSwaggerDocName)' == '$(OpenApiDocumentName)'" />
-    <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)/$(MSBuildProjectName).dll $(OpenApiDocumentName) &gt;&gt; swagger-log.txt"
+    <Exec Command="dotnet swagger tofile --serializeasv2 --output $(OutputPath)swagger.json $(OutputPath)/$(MSBuildProjectName).dll $(OpenApiDocumentName)"
           Condition="'$(DefaultSwaggerDocName)' != '$(OpenApiDocumentName)'" />
     <OnError ExecuteTargets="InformCustomerHowToOverrideSwaggerDocName"/>
   </Target>
@@ -77,9 +77,7 @@
   <!-- cleanup the Swashbuckle CLI dependencies -->
   <Target Name="CleanUpAfterSwaggerGeneration" AfterTargets="CreateSwaggerFile">
     <!-- uninstall the Swashbuckle CLI, as it is no longer needed -->
-    <Exec Command="dotnet tool uninstall Swashbuckle.AspNetCore.Cli &gt;&gt; swagger-log.txt" />
-    <!-- delete the log file of our swagger-file-creation process -->
-    <Delete Files="swagger-log.txt" />
+    <Exec Command="dotnet tool uninstall Swashbuckle.AspNetCore.Cli" />
     <!-- remove the tool manifest if we created it -->
     <RemoveDir Directories=".config" Condition="!$(ToolManifestExists)"/>
   </Target>
