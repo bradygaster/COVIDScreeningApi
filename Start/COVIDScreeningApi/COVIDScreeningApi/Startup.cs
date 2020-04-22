@@ -19,7 +19,7 @@ namespace COVIDScreeningApi
 {
     public class Startup
     {
-        const string SWAGGER_DOC_NAME = "ScreeningApiV1";
+        const string SWAGGER_DOC_NAME = "v1";
 
         public Startup(IConfiguration configuration)
         {
@@ -46,7 +46,7 @@ namespace COVIDScreeningApi
             services.AddDbContext<DataContext>(optionsBuilder =>
             {
                 optionsBuilder.UseCosmos(
-                    Configuration["CosmosDbConnectionString"],
+                    Configuration.GetConnectionString("CosmosDbConnectionString"),
                     "COVIDScreeningDb");
             });
         }

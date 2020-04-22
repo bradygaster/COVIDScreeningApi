@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>5abc7992-35e1-4186-8994-bb96c4a7d0a4</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <OpenApiDocumentName>ScreeningApiV1</OpenApiDocumentName>
+    <OpenApiDocumentName>v1</OpenApiDocumentName>
   </PropertyGroup>
 
   <ItemGroup>
