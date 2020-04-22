@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using COVIDScreeningApi.Data;
 using COVIDScreeningApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,38 +15,51 @@ namespace COVIDScreeningApi.Controllers
     [ApiController]
     public class PortsOfEntryController : ControllerBase
     {
+        private readonly DataContext dataContext;
+        private readonly IConfiguration configuration;
+        public PortsOfEntryController (DataContext dataContext, IConfiguration configuration) {
+            this.configuration = configuration;
+            this.dataContext = dataContext;
+        }
+
         // GET: api/<PortsOfEntryController>
         [HttpGet]
         public IEnumerable<PortsOfEntry> Get()
         {
-            return new List<PortsOfEntry>(new PortsOfEntry[]
-            {
-                new PortsOfEntry { ItemsLabels = "Peace Arch Border", ItemsLatitudes = 49.001453, ItemsLongitudes = -122.736694},
-                new PortsOfEntry { ItemsLabels = "Jefferson County International Airport", ItemsLatitudes = 48.108032, ItemsLongitudes = -122.774895},
-                new PortsOfEntry { ItemsLabels = "Fairfield International Airport", ItemsLatitudes = 48.116325, ItemsLongitudes = -123.493484},
-                new PortsOfEntry { ItemsLabels = "Grant County International Airport", ItemsLatitudes = 47.189873, ItemsLongitudes = -119.323608},
-                new PortsOfEntry { ItemsLabels = "Spokane International Airport", ItemsLatitudes = 47.625526, ItemsLongitudes = -117.536163},
-                new PortsOfEntry { ItemsLabels = "Seattle Airport", ItemsLatitudes = 47.443760, ItemsLongitudes = -122.302202},
-            });
+            return this.dataContext.Ports
+                .OrderBy(x => x.Label)
+                .Select(x => PortsOfEntry.FromDataModel(x));
         }
 
         // GET api/<PortsOfEntryController>/5
         [HttpGet("{id}")]
-        public PortsOfEntry Get(int id)
+        public PortsOfEntry Get(Guid id)
         {
-            return null;
+            return this.dataContext.Ports.First(x => x.Id == id).ToApiModel();
         }
 
         // POST api/<PortsOfEntryController>
         [HttpPost]
-        public void Post([FromBody] PortsOfEntry value)
+        public ActionResult Post([FromBody] PortsOfEntry value)
         {
+            var dataObject = PortOfEntry.FromApiModel(value);
+            this.dataContext.Ports.Add (dataObject);
+            this.dataContext.SaveChanges();
+            var result = PortsOfEntry.FromDataModel(
+                this.dataContext.Ports.First (x => x.Id == dataObject.Id)
+            );
+            var resultUrl = string.Concat(configuration["SwaggerBaseUrl"], $"/PortsOfEntry/{dataObject.Id}");
+            return Created(resultUrl, result);
         }
 
         // PUT api/<PortsOfEntryController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] PortsOfEntry value)
+        public void Put(Guid id, [FromBody] PortsOfEntry value)
         {
+            var entity = this.dataContext.Ports.First (x => x.Id == id);
+            PortOfEntry.CopyPropertyValues(value, entity);
+            this.dataContext.Update(entity);
+            this.dataContext.SaveChanges();
         }
     }
 }
