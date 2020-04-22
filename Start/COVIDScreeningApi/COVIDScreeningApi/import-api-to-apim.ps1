@@ -7,7 +7,7 @@ Set-Variable -Name SwaggerFilePath "C:\Users\brady\source\repos\bradygaster\COVI
 Set-Variable -Name ServiceUrl "https://covid-screening-api.azurewebsites.net"
 Set-Variable -Name ApiId "COVIDScreeningApi"
 Set-Variable -Name ApiVersion "v1"
-Set-Variable -Name AzureSubscriptionId "52462f3d-9226-4c1a-ae95-9a1f2b2c2e0f"
+Set-Variable -Name AzureSubscriptionId ""
 
 # select the subscription
 Set-AzContext -SubscriptionId $AzureSubscriptionId
