@@ -13,7 +13,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-and-release:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -30,16 +30,19 @@ jobs:
     - name: Connect to Azure Container Registry
       run: |
         echo Connecting to Azure Container Registry
+        sleep $[ ( $RANDOM % 10 )  + 1 ]s
         
     - name: Push image and version to ACR
       run: |
         echo docker push
-    
+        sleep $[ ( $RANDOM % 60 )  + 10 ]s
     
     - name: Publish to Azure Kubernetes Service
       run: |
         echo Publishing to AKS
+        sleep $[ ( $RANDOM % 10 )  + 10 ]s
         
     - name: Publish OpenAPI Definition to Azure API Management
       run: |
         echo Publishing OpenAPI Definition to Azure API Management
+        sleep $[ ( $RANDOM % 10 )  + 5 ]s
