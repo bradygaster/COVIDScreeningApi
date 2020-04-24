@@ -43,12 +43,14 @@ namespace COVIDScreeningApi.Controllers
         public ActionResult Post([FromBody] PortsOfEntry value)
         {
             var dataObject = PortOfEntry.FromApiModel(value);
+            Guid newId = Guid.NewGuid();
+            dataObject.Id = newId;
             this.dataContext.Ports.Add (dataObject);
             this.dataContext.SaveChanges();
             var result = PortsOfEntry.FromDataModel(
-                this.dataContext.Ports.First (x => x.Id == dataObject.Id)
+                this.dataContext.Ports.First (x => x.Id == newId)
             );
-            var resultUrl = string.Concat(configuration["SwaggerBaseUrl"], $"/PortsOfEntry/{dataObject.Id}");
+            var resultUrl = string.Concat(configuration["SwaggerBaseUrl"], $"/PortsOfEntry/{newId}");
             return Created(resultUrl, result);
         }
 

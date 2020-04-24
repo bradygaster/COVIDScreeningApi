@@ -38,12 +38,14 @@ namespace COVIDScreeningApi.Controllers {
         [HttpPost]
         public ActionResult Post ([FromBody] RepresentativeData value) {
             var dataObject = Representative.FromApiModel(value);
+            Guid newId = Guid.NewGuid();
+            dataObject.Id = newId;
             this.dataContext.Representatives.Add (dataObject);
             this.dataContext.SaveChanges ();
             var result = RepresentativeData.FromDataModel(
-                this.dataContext.Representatives.First (x => x.RepEmail == dataObject.RepEmail)
+                this.dataContext.Representatives.First (x => x.Id == newId)
             );
-            var resultUrl = string.Concat(configuration["SwaggerBaseUrl"], $"/RepresentativeData/{dataObject.Id}");
+            var resultUrl = string.Concat(configuration["SwaggerBaseUrl"], $"/RepresentativeData/{newId}");
             return Created(resultUrl, result);
         }
 
