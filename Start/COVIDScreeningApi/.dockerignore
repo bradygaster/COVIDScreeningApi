@@ -22,4 +22,5 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
+UnitTests.csproj
 README.md
