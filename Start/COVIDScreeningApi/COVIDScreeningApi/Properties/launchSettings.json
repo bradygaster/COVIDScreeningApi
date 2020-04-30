@@ -14,9 +14,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger/v1/swagger.json",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
         "VaultUri": "https://covid-api-vault.vault.azure.net/",
-        "AZURE_USERNAME": "bradyg@microsoft.com"
+        "AZURE_USERNAME": "bradyg@microsoft.com",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "COVIDScreeningApi": {
@@ -24,9 +24,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger/v1/swagger.json",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
         "VaultUri": "https://covid-api-vault.vault.azure.net/",
-        "AZURE_USERNAME": "bradyg@microsoft.com"
+        "AZURE_USERNAME": "bradyg@microsoft.com",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
@@ -34,12 +34,12 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
-      "publishAllPorts": true,
-      "useSSL": true,
       "environmentVariables": {
         "VaultUri": "https://covid-api-vault.vault.azure.net/",
         "AZURE_USERNAME": "bradyg@microsoft.com"
-      }
+      },
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }
