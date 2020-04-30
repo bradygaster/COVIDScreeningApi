@@ -35,7 +35,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
       "environmentVariables": {
-        "VaultUri": "https://covid-api-vault.vault.azure.net/",
+        "VaultUri": "https://covid-key-vault.vault.azure.net/",
         "AZURE_USERNAME": "bradyg@microsoft.com"
       },
       "publishAllPorts": true,
