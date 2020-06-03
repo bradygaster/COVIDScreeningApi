@@ -5,10 +5,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
-COPY ["Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj", "Start/COVIDScreeningApi/COVIDScreeningApi/"]
-RUN dotnet restore "Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj"
+COPY ["COVIDScreeningApi.csproj", ""]
+RUN dotnet restore "COVIDScreeningApi.csproj"
 COPY . .
-WORKDIR "/src/Start/COVIDScreeningApi/COVIDScreeningApi"
 RUN dotnet build "COVIDScreeningApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
