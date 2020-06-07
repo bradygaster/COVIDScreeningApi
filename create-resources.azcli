@@ -17,11 +17,14 @@ az group create --name $resource-group --location $region
 az cosmosdb create --name $cosmos-db-name --resource-group $resource-group
 
 # create the cosmos db in the cosmos db resource
-az cosmosdb database create --name $cosmos-db-name --resource-group $resource-group --db-name "COVIDScreeningDb"
+az cosmosdb database create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb"
 
 # create the 3 collections in the cosmos db resource we'll need
+az cosmosdb collection create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb" --collection-name "PortsOfEntry"
+az cosmosdb collection create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb" --collection-name "Representatives"
+az cosmosdb collection create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb" --collection-name "Screenings"
 
 # get the connection string of the cosmos db resource
 
 # create the apim resource
-az apim create --name $apim-name
+az apim create --name $apim-name --resource-group $resource-group
