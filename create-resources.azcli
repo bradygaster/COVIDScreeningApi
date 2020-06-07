@@ -65,7 +65,7 @@ swaggerHostName="https://$(az webapp show -n $appServiceName -g $resourceGroup -
 
 # set the swagger base url config property
 echo "Updating swagger base url"
-az webapp config appsettings set set \
+az webapp config appsettings set \
   --settings SwaggerBaseUrl="$cosmosDbConnectionString" \
   --name "$appServiceName" \
   --resource-group "$resourceGroup"
