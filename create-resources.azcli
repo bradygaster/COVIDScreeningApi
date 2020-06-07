@@ -1,18 +1,58 @@
 #!/bin/bash
 
-# resourceGroup="covid-screening-app-resources-05"            # the name of the resource group
-# apimName="screening-apis-05"                                # the name of the api management resource
-# publisherName="Ralphdalf"                                   # the owner name of the API management instance
-# publisherEmail="notralphsrealemail@microsoft.com"           # the owner email of the API management instance
-# cosmosDbName="screeningcosmosdb-05"                         # the name of the cosmos db resource
-# appServicePlanName="covidscreeningappapi-west-plan-05"      # the name of the app service plan for the app service
-# appServiceName="covidscreeningappapi-west-05"               # the name of the app service that'll host the code
-# region="westus"                                             # the region in which we want things to be created
+resourceGroup="covid-screening-app-resources-08"            # the name of the resource group
+apimName="screening-apis-08"                                # the name of the api management resource
+cosmosDbName="screeningcosmosdb-08"                         # the name of the cosmos db resource
+appServicePlanName="covidscreeningappapi-west-plan-08"      # the name of the app service plan for the app service
+appServiceName="covidscreeningappapi-west-08"               # the name of the app service that'll host the code
+acrName="covidscreeningregistry08"                          # the acr resource name  
+region="westus"                                             # the region in which we want things to be created
+publisherName="Ralphdalf"                                   # the owner name of the API management instance
+publisherEmail="notralphsrealemail@microsoft.com"           # the owner email of the API management instance
+
+# build the docker image for the app
+docker build --rm --pull -f "./src/COVIDScreeningApi/Dockerfile" -t "covidscreeningapi:latest" "."
+
+# tag the image for acr publish
+docker tag "${acrName}.azurecr.io/covidscreeningapi:latest"
+
+# push the image to acr
+docker push "${acrName}.azurecr.io/covidscreeningapi:latest"
 
 # create the resource group
 echo "Creating the resource group"
 az group create --name $resourceGroup --location $region
 echo "Created resource group"
+
+# create the acr resource
+az acr create --name "$acrName" --resource-group "$resourceGroup" --sku Standard --admin-enabled true
+
+# get the acr password
+acrPassword=$(az acr credential show --name "$acrName" --resource-group "$resourceGroup" --query passwords[0].value --output tsv)
+
+# get the acr username
+acrUsername=$(az acr credential show --name "$acrName" --resource-group "$resourceGroup" --query username --output tsv)
+
+# create the app service plan for the app
+echo "Creating app service plan"
+az appservice plan create --name $appServicePlanName --resource-group $resourceGroup --is-linux
+echo "Created app service plan"
+
+# create the app service
+echo "Creating app service"
+az webapp create --name "$appServiceName" --plan "$appServicePlanName" --resource-group "$resourceGroup" -i "${acrName}.azurecr.io/covidscreeningapi:latest"
+echo "Created app service"
+
+# get the host name for the site
+swaggerHostName="https://$(az webapp show -n $appServiceName -g $resourceGroup --query hostNames --output tsv)"
+
+# set the swagger base url config property
+echo "Updating swagger base url"
+az webapp config appsettings set \
+  --settings SwaggerBaseUrl="${swaggerHostName}" \
+  --name "$appServiceName" \
+  --resource-group "$resourceGroup"
+echo "Updated swagger base url"
 
 # create the apim resource
 echo "Creating APIM resource"
@@ -38,18 +78,8 @@ echo "Created Cosmos DB collections"
 
 # get the connection string of the cosmos db resource
 echo "Getting Cosmos DB connection string"
-cosmosDbConnectionString=$(az cosmosdb keys list -n covid-screening-data -g COVIDScreeningAPI --type connection-strings --query connectionStrings[0].connectionString --output tsv)
+cosmosDbConnectionString=$(az cosmosdb keys list -n $cosmosDbName -g $resourceGroup --type connection-strings --query connectionStrings[0].connectionString --output tsv)
 echo "Got Cosmos DB connection string"
-
-# create the app service plan for the app
-echo "Creating app service plan"
-az appservice plan create --name $appServicePlanName --resource-group $resourceGroup
-echo "Created app service plan"
-
-# create the app service
-echo "Creating app service"
-az webapp create --name $appServiceName --plan $appServicePlanName --resource-group $resourceGroup
-echo "Created app service"
 
 # set the connection string in the app service
 echo "Updating app service connection string"
@@ -60,15 +90,5 @@ az webapp config connection-string set \
   --resource-group "$resourceGroup"
 echo "Updated app service connection string"
 
-# get the host name for the site
-swaggerHostName="https://$(az webapp show -n $appServiceName -g $resourceGroup --query hostNames --output tsv)"
-
-# set the swagger base url config property
-echo "Updating swagger base url"
-az webapp config appsettings set \
-  --settings SwaggerBaseUrl="$cosmosDbConnectionString" \
-  --name "$appServiceName" \
-  --resource-group "$resourceGroup"
-echo "Updated swagger base url"
-
+# human validation moment
 echo "Finished"
