@@ -1,0 +1,27 @@
+# the name of the resource group
+resource-group="covid-screening-app-resources"
+
+# the name of the api management resource
+apim-name="screening-apis"
+
+# the name of the cosmos db resource
+cosmos-db-name="screeningcosmosdb"
+
+# the region in which we want things to be created
+region="westus"
+
+# create the resource group
+az group create --name $resource-group --location $region
+
+# create the cosmos db resource
+az cosmosdb create --name $cosmos-db-name --resource-group $resource-group
+
+# create the cosmos db in the cosmos db resource
+az cosmosdb database create --name $cosmos-db-name --resource-group $resource-group --db-name "COVIDScreeningDb"
+
+# create the 3 collections in the cosmos db resource we'll need
+
+# get the connection string of the cosmos db resource
+
+# create the apim resource
+az apim create --name $apim-name

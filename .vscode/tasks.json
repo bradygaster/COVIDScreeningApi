@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj",
+                "${workspaceFolder}/src/COVIDScreeningApi/COVIDScreeningApi.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj",
+                "${workspaceFolder}/src/COVIDScreeningApi/COVIDScreeningApi.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,67 +32,11 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj",
+                "${workspaceFolder}/src/COVIDScreeningApi/COVIDScreeningApi.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        },
-        {
-            "type": "docker-build",
-            "label": "docker-build: debug",
-            "dependsOn": [
-                "build"
-            ],
-            "dockerBuild": {
-                "tag": "covidscreeningapi:dev",
-                "target": "base",
-                "dockerfile": "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/Dockerfile",
-                "context": "${workspaceFolder}",
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj"
-            }
-        },
-        {
-            "type": "docker-build",
-            "label": "docker-build: release",
-            "dependsOn": [
-                "build"
-            ],
-            "dockerBuild": {
-                "tag": "covidscreeningapi:latest",
-                "dockerfile": "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/Dockerfile",
-                "context": "${workspaceFolder}",
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj"
-            }
-        },
-        {
-            "type": "docker-run",
-            "label": "docker-run: debug",
-            "dependsOn": [
-                "docker-build: debug"
-            ],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj",
-                "enableDebugging": true
-            }
-        },
-        {
-            "type": "docker-run",
-            "label": "docker-run: release",
-            "dependsOn": [
-                "docker-build: release"
-            ],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/Start/COVIDScreeningApi/COVIDScreeningApi/COVIDScreeningApi.csproj"
-            }
         }
     ]
 }
