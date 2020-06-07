@@ -1,30 +1,89 @@
+#!/bin/bash
+
 # the name of the resource group
-resource-group="covid-screening-app-resources"
+resourceGroup="covid-screening-app-resources-05"
 
 # the name of the api management resource
-apim-name="screening-apis"
+apimName="screening-apis-05"
+
+# the owner name of the API management instance
+publisherName="Ralphdalf"
+
+# the owner email of the API management instance
+publisherEmail="notralphsrealemail@microsoft.com"
 
 # the name of the cosmos db resource
-cosmos-db-name="screeningcosmosdb"
+cosmosDbName="screeningcosmosdb-05"
+
+# the name of the app service plan for the app service
+appServicePlanName="covidscreeningappapi-west-plan-05"
+
+# the name of the app service that'll host the code
+appServiceName="covidscreeningappapi-west-05"
 
 # the region in which we want things to be created
 region="westus"
 
 # create the resource group
-az group create --name $resource-group --location $region
-
-# create the cosmos db resource
-az cosmosdb create --name $cosmos-db-name --resource-group $resource-group
-
-# create the cosmos db in the cosmos db resource
-az cosmosdb database create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb"
-
-# create the 3 collections in the cosmos db resource we'll need
-az cosmosdb collection create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb" --collection-name "PortsOfEntry"
-az cosmosdb collection create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb" --collection-name "Representatives"
-az cosmosdb collection create --name $cosmos-db-name --resource-group-name $resource-group --db-name "COVIDScreeningDb" --collection-name "Screenings"
-
-# get the connection string of the cosmos db resource
+echo "Creating the resource group"
+az group create --name $resourceGroup --location $region
+echo "Created resource group"
 
 # create the apim resource
-az apim create --name $apim-name --resource-group $resource-group
+echo "Creating APIM resource"
+az apim create --name $apimName --resource-group $resourceGroup --sku-name Consumption --publisher-email $publisherEmail --publisher-name $publisherName
+echo "Created APIM resource"
+
+# create the cosmos db resource
+echo "Creating Cosmos DB instance"
+az cosmosdb create --name $cosmosDbName --resource-group $resourceGroup
+echo "Created Cosmos DB instance"
+
+# create the cosmos db in the cosmos db resource
+echo "Creating Cosmos DB database"
+az cosmosdb database create --name $cosmosDbName --resource-group-name $resourceGroup --db-name "COVIDScreeningDb"
+echo "Created Cosmos DB database"
+
+# create the 3 collections in the cosmos db resource we'll need
+echo "Creating Cosmos DB collections"
+az cosmosdb collection create --name $cosmosDbName --resource-group-name $resourceGroup --db-name "COVIDScreeningDb" --collection-name "PortsOfEntry" --partition-key-path "/PartitionKey"
+az cosmosdb collection create --name $cosmosDbName --resource-group-name $resourceGroup --db-name "COVIDScreeningDb" --collection-name "Representatives" --partition-key-path "/PartitionKey"
+az cosmosdb collection create --name $cosmosDbName --resource-group-name $resourceGroup --db-name "COVIDScreeningDb" --collection-name "Screenings" --partition-key-path "/PartitionKey"
+echo "Created Cosmos DB collections"
+
+# get the connection string of the cosmos db resource
+echo "Getting Cosmos DB connection string"
+cosmosDbConnectionString=$(az cosmosdb keys list -n covid-screening-data -g COVIDScreeningAPI --type connection-strings --query connectionStrings[0].connectionString --output tsv)
+echo "Got Cosmos DB connection string"
+
+# create the app service plan for the app
+echo "Creating app service plan"
+az appservice plan create --name $appServicePlanName --resource-group $resourceGroup
+echo "Created app service plan"
+
+# create the app service
+echo "Creating app service"
+az webapp create --name $appServiceName --plan $appServicePlanName --resource-group $resourceGroup
+echo "Created app service"
+
+# set the connection string in the app service
+echo "Updating app service connection string"
+az webapp config connection-string set \
+  --connection-string-type Custom \
+  --settings CosmosDbConnectionString="$cosmosDbConnectionString" \
+  --name "$appServiceName" \
+  --resource-group "$resourceGroup"
+echo "Updated app service connection string"
+
+# get the host name for the site
+swaggerHostName="https://$(az webapp show -n $appServiceName -g $resourceGroup --query hostNames --output tsv)"
+
+# set the swagger base url config property
+echo "Updating swagger base url"
+az webapp config appsettings set set \
+  --settings SwaggerBaseUrl="$cosmosDbConnectionString" \
+  --name "$appServiceName" \
+  --resource-group "$resourceGroup"
+echo "Updated swagger base url"
+
+echo "Finished"
