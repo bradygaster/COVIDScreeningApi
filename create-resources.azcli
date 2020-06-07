@@ -85,7 +85,7 @@ echo "Got Cosmos DB connection string"
 echo "Updating app service connection string"
 az webapp config connection-string set \
   --connection-string-type Custom \
-  --settings CosmosDbConnectionString="$cosmosDbConnectionString" \
+  --settings CosmosDbConnectionString="${cosmosDbConnectionString}" \
   --name "$appServiceName" \
   --resource-group "$resourceGroup"
 echo "Updated app service connection string"
