@@ -1,28 +1,13 @@
 #!/bin/bash
 
-# the name of the resource group
-resourceGroup="covid-screening-app-resources-05"
-
-# the name of the api management resource
-apimName="screening-apis-05"
-
-# the owner name of the API management instance
-publisherName="Ralphdalf"
-
-# the owner email of the API management instance
-publisherEmail="notralphsrealemail@microsoft.com"
-
-# the name of the cosmos db resource
-cosmosDbName="screeningcosmosdb-05"
-
-# the name of the app service plan for the app service
-appServicePlanName="covidscreeningappapi-west-plan-05"
-
-# the name of the app service that'll host the code
-appServiceName="covidscreeningappapi-west-05"
-
-# the region in which we want things to be created
-region="westus"
+resourceGroup="covid-screening-app-resources-05"            # the name of the resource group
+apimName="screening-apis-05"                                # the name of the api management resource
+publisherName="Ralphdalf"                                   # the owner name of the API management instance
+publisherEmail="notralphsrealemail@microsoft.com"           # the owner email of the API management instance
+cosmosDbName="screeningcosmosdb-05"                         # the name of the cosmos db resource
+appServicePlanName="covidscreeningappapi-west-plan-05"      # the name of the app service plan for the app service
+appServiceName="covidscreeningappapi-west-05"               # the name of the app service that'll host the code
+region="westus"                                             # the region in which we want things to be created
 
 # create the resource group
 echo "Creating the resource group"
