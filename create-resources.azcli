@@ -1,23 +1,17 @@
 #!/bin/bash
 
-resourceGroup="covid-screening-app-resources-08"            # the name of the resource group
-apimName="screening-apis-08"                                # the name of the api management resource
-cosmosDbName="screeningcosmosdb-08"                         # the name of the cosmos db resource
-appServicePlanName="covidscreeningappapi-west-plan-08"      # the name of the app service plan for the app service
-appServiceName="covidscreeningappapi-west-08"               # the name of the app service that'll host the code
-acrName="covidscreeningregistry08"                          # the acr resource name  
+resourceGroup="covid-screening-app-resources-11"            # the name of the resource group
+apimName="screening-apis-11"                                # the name of the api management resource
+cosmosDbName="screeningcosmosdb-11"                         # the name of the cosmos db resource
+appServicePlanName="covidscreeningappapi-west-plan-11"      # the name of the app service plan for the app service
+appServiceName="covidscreeningappapi-west-11"               # the name of the app service that'll host the code
+acrName="covidscreeningregistry11"                          # the acr resource name  
 region="westus"                                             # the region in which we want things to be created
 publisherName="Ralphdalf"                                   # the owner name of the API management instance
 publisherEmail="notralphsrealemail@microsoft.com"           # the owner email of the API management instance
 
 # build the docker image for the app
 docker build --rm --pull -f "./src/COVIDScreeningApi/Dockerfile" -t "covidscreeningapi:latest" "."
-
-# tag the image for acr publish
-docker tag "${acrName}.azurecr.io/covidscreeningapi:latest"
-
-# push the image to acr
-docker push "${acrName}.azurecr.io/covidscreeningapi:latest"
 
 # create the resource group
 echo "Creating the resource group"
@@ -27,11 +21,14 @@ echo "Created resource group"
 # create the acr resource
 az acr create --name "$acrName" --resource-group "$resourceGroup" --sku Standard --admin-enabled true
 
-# get the acr password
-acrPassword=$(az acr credential show --name "$acrName" --resource-group "$resourceGroup" --query passwords[0].value --output tsv)
+# authenticate the environment to acr
+az acr login --name "$acrName"
 
-# get the acr username
-acrUsername=$(az acr credential show --name "$acrName" --resource-group "$resourceGroup" --query username --output tsv)
+# tag the image for acr publish
+docker tag "covidscreeningapi:latest" "${acrName}.azurecr.io/covidscreeningapi:latest"
+
+# push the image to acr
+docker push "${acrName}.azurecr.io/covidscreeningapi:latest"
 
 # create the app service plan for the app
 echo "Creating app service plan"
