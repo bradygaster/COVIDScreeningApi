@@ -1,8 +1,10 @@
-# Variables
+# Azure-specific variables
 Set-Variable -Name ResourceGroupName "COVIDScreeningAPI"
 Set-Variable -Name ApimInstance "screening-app-apis"
-Set-Variable -Name SwaggerFilePath "./src/COVIDScreeningApi/bin/Debug/netcoreapp3.1/swagger.json"
 Set-Variable -Name ServiceUrl "https://covid-screening-api.azurewebsites.net"
+
+# Variables
+Set-Variable -Name SwaggerFilePath "./src/COVIDScreeningApi/bin/Debug/netcoreapp3.1/swagger.json"
 Set-Variable -Name ApiId "COVIDScreeningApi"
 Set-Variable -Name ApiVersion "v1"
 Set-Variable -Name AzureSubscriptionId ""
