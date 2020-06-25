@@ -4,7 +4,7 @@
       "type": "secrets.user"
     },
     "cosmosdb1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/covidScreeningApi",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/covid-screening-api",
       "type": "cosmosdb.azure",
       "connectionId": "CosmosDbConnectionString",
       "secretStore": "LocalSecretsFile"
