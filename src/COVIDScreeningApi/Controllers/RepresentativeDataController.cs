@@ -16,6 +16,7 @@ namespace COVIDScreeningApi.Controllers {
         private readonly DataContext dataContext;
         private readonly IConfiguration configuration;
         public RepresentativeDataController (DataContext dataContext, IConfiguration configuration) {
+            dataContext.Database.EnsureCreated();
             this.configuration = configuration;
             this.dataContext = dataContext;
         }
