@@ -18,6 +18,7 @@ namespace COVIDScreeningApi.Controllers
         private readonly DataContext dataContext;
         private readonly IConfiguration configuration;
         public PortsOfEntryController (DataContext dataContext, IConfiguration configuration) {
+            dataContext.Database.EnsureCreated();
             this.configuration = configuration;
             this.dataContext = dataContext;
         }
