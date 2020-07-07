@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace COVIDScreeningApi
 {
-    internal static class DbContextOptionsBuilderExtensions
+    public static class DbContextOptionsBuilderExtensions
     {
-        internal static DbContextOptionsBuilder UseCosmos(this DbContextOptionsBuilder builder,
+        public static DbContextOptionsBuilder UseCosmos(this DbContextOptionsBuilder builder,
             string connectionString,
             string databaseName)
         {

@@ -41,7 +41,7 @@ namespace COVIDScreeningApi.Controllers
 
         // POST api/<PortsOfEntryController>
         [HttpPost]
-        public ActionResult Post([FromBody] PortsOfEntry value)
+        public ActionResult<PortsOfEntry> Post([FromBody] PortsOfEntry value)
         {
             var dataObject = PortOfEntry.FromApiModel(value);
             Guid newId = Guid.NewGuid();
