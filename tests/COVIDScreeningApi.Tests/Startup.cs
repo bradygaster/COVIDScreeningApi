@@ -16,13 +16,15 @@ namespace COVIDScreeningApi.Tests
 {
     public class Startup : DependencyInjectionTestFramework
     {
-        public IConfiguration Configuration { get; }
+        IConfiguration Configuration = 
+            new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
         public Startup(IMessageSink messageSink) : base(messageSink) { }
 
         protected void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IConfiguration, Configuration>();
+            services.AddSingleton<IConfiguration>(Configuration);
+
             services.AddDbContext<DataContext>(optionsBuilder =>
             {
                 optionsBuilder.UseCosmos(
