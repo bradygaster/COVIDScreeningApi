@@ -37,7 +37,7 @@ namespace COVIDScreeningApi.Controllers {
 
         // POST api/<ScreeningDataTableController>
         [HttpPost]
-        public ActionResult Post ([FromBody] ScreeningDataTable value) { 
+        public ActionResult<ScreeningDataTable> Post ([FromBody] ScreeningDataTable value) { 
             var dataObject = Screening.FromApiModel(value);
             Guid newId = Guid.NewGuid();
             dataObject.Id = newId;

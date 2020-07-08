@@ -37,7 +37,7 @@ namespace COVIDScreeningApi.Controllers {
 
         // POST api/<RepresentativeDataController>
         [HttpPost]
-        public ActionResult Post ([FromBody] RepresentativeData value) {
+        public ActionResult<RepresentativeData> Post ([FromBody] RepresentativeData value) {
             var dataObject = Representative.FromApiModel(value);
             Guid newId = Guid.NewGuid();
             dataObject.Id = newId;

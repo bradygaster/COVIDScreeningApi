@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30014.187
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COVIDScreeningApi", "COVIDScreeningApi\COVIDScreeningApi.csproj", "{B2A6F07E-1C41-4F1B-8DB9-50CEC1D730BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COVIDScreeningApi", "src\COVIDScreeningApi\COVIDScreeningApi.csproj", "{B2A6F07E-1C41-4F1B-8DB9-50CEC1D730BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CAEFA69E-FAAE-4366-8B00-6F9BA7ACA7CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COVIDScreeningApi.Tests", "tests\COVIDScreeningApi.Tests\COVIDScreeningApi.Tests.csproj", "{C7B963D3-AF0C-44EE-B061-0089F49025B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +19,18 @@ Global
 		{B2A6F07E-1C41-4F1B-8DB9-50CEC1D730BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2A6F07E-1C41-4F1B-8DB9-50CEC1D730BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2A6F07E-1C41-4F1B-8DB9-50CEC1D730BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B963D3-AF0C-44EE-B061-0089F49025B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B963D3-AF0C-44EE-B061-0089F49025B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B963D3-AF0C-44EE-B061-0089F49025B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B963D3-AF0C-44EE-B061-0089F49025B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A9CE1A19-0B11-4E36-9772-C540EE3EE609}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C7B963D3-AF0C-44EE-B061-0089F49025B5} = {CAEFA69E-FAAE-4366-8B00-6F9BA7ACA7CC}
 	EndGlobalSection
 EndGlobal
