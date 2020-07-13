@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace COVIDScreeningApi.Tests
 {
@@ -32,48 +34,53 @@ namespace COVIDScreeningApi.Tests
         }
 
         [Fact]
-        public void RepresentativeCanBeSavedToDatabase()
+        public void CanGenerateSampleData()
         {
-            var rep = CreateRandomRepresentative();
-            var postResult = RepresentativeDataController.Post(rep);
-            var createdReult = postResult.Result as CreatedResult;
-            (createdReult.Value as RepresentativeData).Should().NotBeNull();
-            (createdReult.Value as RepresentativeData).Id.Should().NotBe(Guid.Empty);
-        }
+            // create some ports of entry
+            for(int i=0; i<10; i++) 
+            {
+                var portOfEntry = CreateRandomPortOfEntry();
+                portOfEntry.Should().NotBeNull();
+                var postResult = PortsOfEntryController.Post(portOfEntry);
+                var createdReult = postResult.Result as CreatedResult;
+                (createdReult.Value as PortsOfEntry).Should().NotBeNull();
+                (createdReult.Value as PortsOfEntry).Id.Should().NotBe(Guid.Empty);
+            }
 
-        [Fact]
-        public void CanGetRandomExistingRepresentatives()
-        {
-            var rep = GetRandomRepresentative();
-            rep.Should().NotBeNull();
-        }
+            // create some reps
+            for(int i=0; i<10; i++) 
+            {
+                var rep = CreateRandomRepresentative();
+                var postResult = RepresentativeDataController.Post(rep);
+                var createdReult = postResult.Result as CreatedResult;
+                (createdReult.Value as RepresentativeData).Should().NotBeNull();
+                (createdReult.Value as RepresentativeData).Id.Should().NotBe(Guid.Empty);
+            }
 
-        [Fact]
-        public void ScreeningDataCanBeSavedToDatabase()
-        {
-            var rep = CreateRandomRepresentative();
-            rep.Should().NotBeNull();
-            var screen = CreateRandomScreeningData(rep.RepName);
-            var postResult = ScreeningDataTableController.Post(screen);
-            var createdReult = postResult.Result as CreatedResult;
-            (createdReult.Value as ScreeningDataTable).Should().NotBeNull();
-            (createdReult.Value as ScreeningDataTable).Id.Should().NotBe(Guid.Empty);
-        }
+            // get back the reps
+            var reps = RepresentativeDataController.Get();
 
-        [Fact]
-        public void PortsOfEntryCanBeSavedToDatabase()
-        {
-            var portOfEntry = CreateRandomPortOfEntry();
-            portOfEntry.Should().NotBeNull();
-            var postResult = PortsOfEntryController.Post(portOfEntry);
-            var createdReult = postResult.Result as CreatedResult;
-            (createdReult.Value as PortsOfEntry).Should().NotBeNull();
-            (createdReult.Value as PortsOfEntry).Id.Should().NotBe(Guid.Empty);
+            // create some screenings
+            for(int i=0; i<10; i++) 
+            {
+                var rep = GetRandomRepresentative(reps);
+                rep.Should().NotBeNull();
+                var screen = CreateRandomScreeningData(rep.RepName);
+                var postResult = ScreeningDataTableController.Post(screen);
+                var createdReult = postResult.Result as CreatedResult;
+                (createdReult.Value as ScreeningDataTable).Should().NotBeNull();
+                (createdReult.Value as ScreeningDataTable).Id.Should().NotBe(Guid.Empty);
+            }
         }
 
         RepresentativeData GetRandomRepresentative()
         {
             var reps = RepresentativeDataController.Get();
+            return GetRandomRepresentative(reps);
+        }
+
+        RepresentativeData GetRandomRepresentative(IEnumerable<RepresentativeData> reps)
+        {
             return reps.ElementAt(new Random().Next(0, (reps.Count() - 1)));
         }
 
