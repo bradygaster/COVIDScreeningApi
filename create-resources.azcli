@@ -1,14 +1,23 @@
 #!/bin/bash
 
-resourceGroup="covid-screening-app-resources-11"            # the name of the resource group
-apimName="screening-apis-11"                                # the name of the api management resource
-cosmosDbName="screeningcosmosdb-11"                         # the name of the cosmos db resource
-appServicePlanName="covidscreeningappapi-west-plan-11"      # the name of the app service plan for the app service
-appServiceName="covidscreeningappapi-west-11"               # the name of the app service that'll host the code
-acrName="covidscreeningregistry11"                          # the acr resource name  
-region="westus"                                             # the region in which we want things to be created
-publisherName="Ralphdalf"                                   # the owner name of the API management instance
-publisherEmail="notralphsrealemail@microsoft.com"           # the owner email of the API management instance
+# the name of the resource group
+resourceGroup="covid-screening-app-resources"
+# the name of the api management resource
+apimName="screening-apis"
+# the name of the cosmos db resource
+cosmosDbName="screeningcosmosdb"
+# the name of the app service plan for the app service
+appServicePlanName="covidscreeningappapi-west-plan"
+# the name of the app service that'll host the code
+appServiceName="covidscreeningappapi-west"
+# the acr resource name  
+acrName="covidscreeningregistry"
+# the region in which we want things to be created
+region="westus"
+# the owner name of the API management instance
+publisherName="CovidApManagement"
+# the owner email of the API management instance
+publisherEmail="CovidApManagement@demo.com"
 
 # build the docker image for the app
 docker build --rm --pull -f "./src/COVIDScreeningApi/Dockerfile" -t "covidscreeningapi:latest" "."
