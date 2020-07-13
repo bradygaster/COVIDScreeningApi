@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # the name of the resource group
-resourceGroup="covid-screening-app-resources"
+resourceGroup="COVIDScreeningDemoApp"
 # the name of the api management resource
 apimName="screening-apis"
 # the name of the cosmos db resource
