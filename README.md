@@ -62,7 +62,6 @@ publisherEmail="CovidApManagement@demo.com"
 
 Edit the script to represent your own environment or naming preferences. Try to pick something you're sure is unique for each of the resource names. Sample values are shown below:
 
-
 ```bash
 # the name of the resource group
 resourceGroup="covid-screening-app-resources"
@@ -85,3 +84,44 @@ publisherEmail="my-real-email@outlook.com"
 ```
 
 Once you've edited the variables and logged into your Azure CLI, run the script using the command `bash create-resources.azcli` or simply, `create-resources.azcli` if you're in a bash terminal. The script will take some time to run but will provide relatively verbose logging and details as it proceeds.
+
+### Generating sample data
+
+This repository also contains a unit test project that contains a single Xunit test that will generate sample data using [Bogus](https://github.com/bchavez/Bogus), the fantastic fake data generator useful for unit testing with .NET. By executing a single Xunit test using the `dotnet test` CLI command you will generate sample data in the Cosmos DB database used to store your entities.
+
+When the `.azcli` setup script completes, you will see the connection string to the Cosmos DB in the terminal window (or in your log). If you don't see this you can either use the Azure portal to get the connection string to it, or the [Azure Databases](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdb) extension for Visual Studio Code.
+
+Once you've copied the connection string, paste it into the `tests\COVIDScreeningApi.Tests\appsettings.json` file as indicated in the file:
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "SwaggerBaseUrl": "https://localhost:5001",
+  "ConnectionStrings": {
+    "CosmosDbConnectionString" : "<ConnectionStringHere>"
+  }
+}
+```
+
+Then run the unit test using the command:
+
+```bash
+dotnet test
+```
+
+You will see the Xunit test execute and then see the sample data in your Cosmos DB database.
+
+## Contributing
+
+This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the Microsoft Open Source Code of Conduct. For more information see the Code of Conduct FAQ or contact opencode@microsoft.com with any additional questions or comments.
