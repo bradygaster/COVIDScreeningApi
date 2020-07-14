@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.1.0.17461" SolutionPackageVersion="9.1" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SolutionManifest>
+    <UniqueName>COVIDResponseApp</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="COVID Response App" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>1.0.0.0</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>powerazure</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Power Azure" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Publisher for the Power Azure Demo" languagecode="1033" />
+      </Descriptions>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>poweraz</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>90000</CustomizationOptionValuePrefix>
+      <Addresses />
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="300" schemaName="poweraz_covidscreeningapp_f4d3f" behavior="0" />
+      <RootComponent type="372" id="{d903d046-4094-46d9-bdd0-bae6af113101}" schemaName="poweraz_COVIDScreeningAPI" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required key="0" type="1" schemaName="msdyn_aimodel" displayName="AI Model" solution="msdyn_AISolution (2.4.3.8)" />
+        <!-- <Dependent key="1" type="300" schemaName="poweraz_covidscreeningapp_f4d3f" displayName="COVID Screening App" />
+        <Dependent key="2" type="372" schemaName="poweraz_COVIDScreeningAPI" displayName="COVID Screening API" /> -->
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

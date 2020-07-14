@@ -1,0 +1,331 @@
+
+name: powerplatform-covid
+version: 0.4.2
+description: "A Porter bundle that deploys both the custom backend in Azure but also the Power Platform Managed Solution."
+# TODO: update the registry to your own, e.g. myregistry/porter-hello:v0.1.0
+tag: squillace.azurecr.io/powerplatform-covid:v0.4.2
+
+# Uncomment the line below to use a template Dockerfile for your invocation image
+dockerfile: Dockerfile.tmpl
+
+mixins:
+  - exec
+  - powerplatform
+  - az
+  - jq
+
+install:
+  - az:
+      description: "Setting Azure CLI defaults...."
+      arguments:
+        - configure
+      flags:
+        defaults: "output=table"
+  - az:
+      description: "Logging into Azure..."
+      arguments:
+        - login
+      flags:
+        service-principal:
+        username: "'{{bundle.credentials.AZURE_CLIENT_ID}}'"
+        password: "'{{bundle.credentials.AZURE_CLIENT_PASSWORD}}'"
+        tenant: "'{{bundle.credentials.POWER_TENANT_ID}}'"
+        output: table
+  - az:
+      description: "Creating the Azure resource group if it doesn't exist...."
+      arguments:
+        - group
+        - create
+      flags:
+        name: "'{{bundle.parameters.resourceGroup}}'"
+        location: "'{{bundle.parameters.region}}'"
+        output: table
+
+  - az:
+      description: "Creating an ACR repository..."
+      arguments:
+        - acr
+        - create
+      flags:
+        name: "'{{bundle.parameters.acrName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        sku: "'Standard'"
+        admin-enabled: "'true'"
+  - az:
+      description: "Creating an App Service plan...."
+      arguments: 
+        - appservice
+        - plan
+        - create
+      flags:
+        name: "'{{bundle.parameters.appServicePlanName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        is-linux: 
+
+  - az:
+      description: "Creating the App Service...."
+      arguments:
+        - webapp
+        - create
+      flags:
+        name: "'{{bundle.parameters.appServiceName}}'"
+        plan: "'{{bundle.parameters.appServicePlanName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        i: "'{{bundle.parameters.acrName}}.azurecr.io/covidscreeningapi:latest'"
+        o: table
+  - exec:
+      command: az
+      description: "Capturing the Swagger URL for the API Management..."
+      arguments:
+        - webapp
+        - show
+      flags:
+        name: "'{{bundle.parameters.appServiceName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        query: "'hostNames'"
+        output: tsv
+      outputs:
+        - name: swaggerHostName
+          regex: '(.*)\s'      
+  - az:
+      description: "Updating the swagger base url..."
+      arguments:
+        - webapp
+        - config
+        - appsettings
+        - set
+      flags:
+        settings: "'SwaggerBaseUrl={{bundle.outputs.swaggerHostName}}'"
+        name: "'{{bundle.parameters.appServiceName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+  - az:
+      description: "Updating the webapp's container environment..."
+      arguments:
+        - webapp
+        - config
+        - container
+        - set
+      flags:
+        name: "'{{bundle.parameters.appServiceName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        docker-registry-server-url: "'https://{{bundle.parameters.acrName}}.azurecr.io'"
+        docker-custom-image-name: "'{{bundle.parameters.acrName}}.azurecr.io/covidscreeningapi:latest'"
+        docker-registry-server-user: "'{{bundle.credentials.AZURE_CLIENT_ID}}'" 
+        docker-registry-server-password: "'{{bundle.credentials.AZURE_CLIENT_PASSWORD}}'" 
+
+
+  - az:
+      description: "Creating the API Management instance."
+      arguments:
+        - apim
+        - create
+      flags:
+        name: "'{{bundle.parameters.apimName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        sku-name: "'Consumption'"
+        publisher-email: "'{{bundle.parameters.publisherEmail}}'"
+        publisher-name: "'{{bundle.parameters.publisherName}}'"
+        o: table
+  - az:
+      description: "Creating the CosmosDb for the application..."
+      arguments:
+        - cosmosdb
+        - create
+      flags: 
+        name: "'{{bundle.parameters.cosmosAccountName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        o: table
+  - az:
+      description: "Creating the database in CosmosDB...."
+      arguments:
+        - cosmosdb
+        - sql
+        - database
+        - create
+      flags:
+        account-name: "'{{bundle.parameters.cosmosAccountName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        name: "'{{bundle.parameters.cosmosDbName}}'"
+        o: table
+  - az:
+      description: "Creating the \"PortsOfEntry\" collection in the CosmosDB instance..."
+      arguments:
+        - cosmosdb
+        - sql 
+        - container
+        - create
+      flags:
+        account-name: "'{{bundle.parameters.cosmosAccountName}}'"
+        database-name: "'{{bundle.parameters.cosmosDbName}}'"
+        name: "'PortsOfEntry'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        partition-key-path: "'/PartitionKey'"
+        o: table
+  - az:
+      description: "Creating the \"Representatives\" collection in the CosmosDB instance..."
+      arguments:
+        - cosmosdb
+        - sql 
+        - container
+        - create
+      flags:
+        account-name: "'{{bundle.parameters.cosmosAccountName}}'"
+        database-name: "'{{bundle.parameters.cosmosDbName}}'"
+        name: "'Representatives'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        partition-key-path: "'/PartitionKey'"
+        o: table
+  - az:
+      description: "Creating the \"Screenings\" collections in the CosmosDB instance..."
+      arguments:
+        - cosmosdb
+        - sql 
+        - container
+        - create
+      flags:
+        account-name: "'{{bundle.parameters.cosmosAccountName}}'"
+        database-name: "'{{bundle.parameters.cosmosDbName}}'"
+        name: "'Screenings'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        partition-key-path: "'/PartitionKey'"
+        o: table
+  - az:
+      description: "Capturing the CosmosDb connection string...."
+      arguments: 
+        - cosmosdb
+        - keys
+        - list
+      flags:
+        name: "'{{bundle.parameters.cosmosAccountName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        type: connection-strings
+        query: "'connectionStrings[0]'"
+      outputs:
+        - name: cosmosConnectionString
+          jsonPath: 'connectionString' 
+  - az:
+      description: "Configuring the Web app to reach the database..."
+      arguments:
+        - webapp
+        - config
+        - connection-string
+        - set
+      flags:
+        connection-string-type: Custom
+        settings: "'CosmosDbConnectionString={{bundle.outputs.cosmosConnectionString}}'"
+        name: "'{{bundle.parameters.appServiceName}}'"
+        resource-group: "'{{bundle.parameters.resourceGroup}}'"
+        o: table
+  - exec:
+      command: bash
+      description: "Modify the Power Platform Solution to point at the correct APIM base URL."
+      arguments:
+        - apim-hostname.sh
+        - "'{{bundle.parameters.apimName}}'"
+        - "'{{bundle.parameters.resourceGroup}}'"
+
+  - exec:
+      description: "Installs the Power Platform Solution on top of the set of Azure resources that expose a legacy service with a Web app connecting to Cosmos and APIM for management."
+      command: node
+      arguments:
+        - 'distCli/index.js'
+      flags:
+        s: COVIDResponseApp_managed.zip
+        e: '{{bundle.parameters.POWER_ENVIRONMENT_URL}}'
+        userName: '{{bundle.credentials.POWER_USERNAME}}'
+        password: '{{bundle.credentials.POWER_PASSWORD}}'
+
+
+
+upgrade:
+  - exec:
+      description: "Upgrading the Azure and Power Platform solution."
+      command: ./helpers.sh
+      arguments:
+        - upgrade
+
+uninstall:
+  - exec:
+      description: "Uninstalling the powerplatform-covid Azure and Power Platform Solution."
+      command: ./helpers.sh
+      arguments:
+        - uninstall
+
+parameters:
+  - name: POWER_ENVIRONMENT_URL
+    description: "The URL corresponding to the environment GUID. For example https://ralph.crm.dynamics.com."
+    default: https://orge5c52fe0.crm.dynamics.com/
+    type: string
+  - name: resourceGroup
+    description: "The Azure resource group to use for your backend resources. It will be created if it doesn't exist."
+    default: covidscreening
+    type: string
+  - name: apimName
+    description: "The name of the API Management instance for your data services."
+    default: screening-app-apis
+    type: string
+  - name: cosmosAccountName
+    description: "The name of the Azure Cosmos DB account."
+    default: screeningdb
+    type: string
+  - name: cosmosDbName
+    description: "The name of the Azure Cosmos SQL instance for your data."
+    default: COVIDScreeningDb
+    type: string
+  - name: appServicePlanName
+    description: "The name of your Azure App Service plan."
+    default: covid-app-service-plan
+    type: string
+  - name: appServiceName
+    description: "The name of your Azure App Service itself."
+    default: covid-app-service
+    type: string
+  - name: region
+    description: "The location into which you want to deploy your Azure App Service."
+    default: westus2
+    type: string
+  - name: publisherName
+    description: "The name of the API Management publisher."
+    default: bradygaster-inc
+    type: string
+  - name: publisherEmail
+    description: "The email address of the API Management publisher."
+    default: bradygaster-inc@hotmail.com
+    type: string
+  - name: acrName
+    description: "The name of the ACR repository...."
+    default: democovidScreeningRegistry
+    type: string
+
+# See https://porter.sh/author-bundles/#dependencies
+#dependencies:
+#  mysql:
+#    tag: getporter/mysql:v0.1.2
+#    parameters:
+#      database-name: wordpress
+
+# See https://porter.sh/wiring/#credentials
+credentials:
+  - name: POWER_TENANT_ID
+    description: "The Azure tenant identifier."
+    env: POWER_TENANT_ID 
+  - name: POWER_CLIENT_ID
+    description: "The Azure Client identifier, also called the App ID."
+    env: POWER_CLIENT_ID 
+  - name: POWER_CLIENT_PASSWORD
+    description: "The Azure client password or secret."
+    env: POWER_CLIENT_PASSWORD 
+  - name: AZURE_CLIENT_ID
+    description: "The Azure Client identifier, also called the App ID."
+    env: AZURE_CLIENT_ID 
+  - name: AZURE_CLIENT_PASSWORD
+    description: "The Azure client password or secret."
+    env: AZURE_CLIENT_PASSWORD 
+  - name: POWER_USERNAME
+    description: "The username to log into CDS api."
+    env: userName
+  - name: POWER_PASSWORD
+    description: "The username's password to log into CDS api."
+    env: POWER_PASSWORD
+
+
