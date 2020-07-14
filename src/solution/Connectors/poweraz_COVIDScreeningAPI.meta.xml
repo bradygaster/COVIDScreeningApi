@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Connector>
+  <connectorid>d903d046-4094-46d9-bdd0-bae6af113101</connectorid>
+  <description></description>
+  <displayname>COVID Screening API</displayname>
+  <iconbrandcolor>#663399</iconbrandcolor>
+  <name>poweraz_COVIDScreeningAPI</name>
+  <connectortype>1</connectortype>
+  <openapidefinition>/Connector/poweraz_COVIDScreeningAPI_openapidefinition.json</openapidefinition>
+  <policytemplateinstances>/Connector/poweraz_COVIDScreeningAPI_policytemplateinstances.json</policytemplateinstances>
+</Connector>
