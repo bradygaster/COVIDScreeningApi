@@ -19,7 +19,7 @@ For other options on installation see [Installing AutoRest](https://aka.ms/autor
 The following are the settings for this using this API with AutoRest.
 
 ``` yaml
-input-file: ./swagger.json
+input-file: ../swagger.json
 output-folder: ./Generated
 namespace: COVIDScreeningApi.ClientSdk
 ```

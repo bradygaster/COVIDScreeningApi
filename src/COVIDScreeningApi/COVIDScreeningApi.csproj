@@ -16,4 +16,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.5.1" />
   </ItemGroup>
 
+  <Target Name="Generate OpenAPI Specification Document" BeforeTargets="Build">
+    <Exec Command="dotnet swagger tofile --serializeasv2 --output ../swagger.json $(OutputPath)/COVIDScreeningApi.dll v1" />
+  </Target>
+
+
 </Project>
