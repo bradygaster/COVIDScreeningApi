@@ -3,6 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 src/COVIDScreeningApi.ClientSdk/Generated
+src/swagger.json
 
 # User-specific files
 *.rsuser
