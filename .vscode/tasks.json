@@ -31,8 +31,9 @@
             "type": "process",
             "args": [
                 "watch",
-                "run",
+                "-p",
                 "${workspaceFolder}/src/COVIDScreeningApi/COVIDScreeningApi.csproj",
+                "run",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
