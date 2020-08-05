@@ -22,22 +22,22 @@ namespace COVIDScreeningApi.Controllers {
         }
 
         // GET: api/<ScreeningDataTableController>
-        [HttpGet]
-        public IEnumerable<ScreeningDataTable> Get () {
+        [HttpGet(Name=nameof(GetScreenings))]
+        public IEnumerable<ScreeningDataTable> GetScreenings () {
             return this.dataContext.Screenings
                 .OrderBy(x => x.VisitorName)
                 .Select(x => ScreeningDataTable.FromDataModel(x));
         }
 
         // GET api/<ScreeningDataTableController>/5
-        [HttpGet ("{id}")]
-        public ScreeningDataTable Get (Guid id) {
+        [HttpGet ("{id}", Name=nameof(GetScreening))]
+        public ScreeningDataTable GetScreening (Guid id) {
             return this.dataContext.Screenings.First(x => x.Id == id).ToApiModel();
         }
 
         // POST api/<ScreeningDataTableController>
-        [HttpPost]
-        public ActionResult<ScreeningDataTable> Post ([FromBody] ScreeningDataTable value) { 
+        [HttpPost(Name=nameof(CreateScreening))]
+        public ActionResult<ScreeningDataTable> CreateScreening ([FromBody] ScreeningDataTable value) { 
             var dataObject = Screening.FromApiModel(value);
             Guid newId = Guid.NewGuid();
             dataObject.Id = newId;
@@ -51,8 +51,8 @@ namespace COVIDScreeningApi.Controllers {
         }
 
         // PUT api/<ScreeningDataTableController>/5
-        [HttpPut ("{id}")]
-        public void Put (Guid id, [FromBody] ScreeningDataTable value) { 
+        [HttpPut ("{id}", Name=nameof(PutScreening))]
+        public void PutScreening (Guid id, [FromBody] ScreeningDataTable value) { 
             var entity = this.dataContext.Screenings.First (x => x.Id == id);
             Screening.CopyPropertyValues(value, entity);
             this.dataContext.Update(entity);

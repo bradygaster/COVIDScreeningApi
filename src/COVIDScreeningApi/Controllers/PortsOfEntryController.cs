@@ -24,8 +24,8 @@ namespace COVIDScreeningApi.Controllers
         }
 
         // GET: api/<PortsOfEntryController>
-        [HttpGet]
-        public IEnumerable<PortsOfEntry> Get()
+        [HttpGet(Name=nameof(GetPortsOfEntry))]
+        public IEnumerable<PortsOfEntry> GetPortsOfEntry()
         {
             return this.dataContext.Ports
                 .OrderBy(x => x.Label)
@@ -33,15 +33,15 @@ namespace COVIDScreeningApi.Controllers
         }
 
         // GET api/<PortsOfEntryController>/5
-        [HttpGet("{id}")]
-        public PortsOfEntry Get(Guid id)
+        [HttpGet("{id}", Name=nameof(GetPortOfEntry))]
+        public PortsOfEntry GetPortOfEntry(Guid id)
         {
             return this.dataContext.Ports.First(x => x.Id == id).ToApiModel();
         }
 
         // POST api/<PortsOfEntryController>
-        [HttpPost]
-        public ActionResult<PortsOfEntry> Post([FromBody] PortsOfEntry value)
+        [HttpPost(Name=nameof(CreatePortOfEntry))]
+        public ActionResult<PortsOfEntry> CreatePortOfEntry([FromBody] PortsOfEntry value)
         {
             var dataObject = PortOfEntry.FromApiModel(value);
             Guid newId = Guid.NewGuid();
@@ -56,8 +56,8 @@ namespace COVIDScreeningApi.Controllers
         }
 
         // PUT api/<PortsOfEntryController>/5
-        [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] PortsOfEntry value)
+        [HttpPut("{id}", Name=nameof(PutPortOfEntry))]
+        public void PutPortOfEntry(Guid id, [FromBody] PortsOfEntry value)
         {
             var entity = this.dataContext.Ports.First (x => x.Id == id);
             PortOfEntry.CopyPropertyValues(value, entity);
