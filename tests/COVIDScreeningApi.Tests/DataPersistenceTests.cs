@@ -41,7 +41,7 @@ namespace COVIDScreeningApi.Tests
             {
                 var portOfEntry = CreateRandomPortOfEntry();
                 portOfEntry.Should().NotBeNull();
-                var postResult = PortsOfEntryController.Post(portOfEntry);
+                var postResult = PortsOfEntryController.CreatePortOfEntry(portOfEntry);
                 var createdReult = postResult.Result as CreatedResult;
                 (createdReult.Value as PortsOfEntry).Should().NotBeNull();
                 (createdReult.Value as PortsOfEntry).Id.Should().NotBe(Guid.Empty);
@@ -51,14 +51,14 @@ namespace COVIDScreeningApi.Tests
             for(int i=0; i<10; i++) 
             {
                 var rep = CreateRandomRepresentative();
-                var postResult = RepresentativeDataController.Post(rep);
+                var postResult = RepresentativeDataController.CreateRepresentativeData(rep);
                 var createdReult = postResult.Result as CreatedResult;
                 (createdReult.Value as RepresentativeData).Should().NotBeNull();
                 (createdReult.Value as RepresentativeData).Id.Should().NotBe(Guid.Empty);
             }
 
             // get back the reps
-            var reps = RepresentativeDataController.Get();
+            var reps = RepresentativeDataController.GetRepresentatives();
 
             // create some screenings
             for(int i=0; i<10; i++) 
@@ -66,7 +66,7 @@ namespace COVIDScreeningApi.Tests
                 var rep = GetRandomRepresentative(reps);
                 rep.Should().NotBeNull();
                 var screen = CreateRandomScreeningData(rep.RepName);
-                var postResult = ScreeningDataTableController.Post(screen);
+                var postResult = ScreeningDataTableController.CreateScreening(screen);
                 var createdReult = postResult.Result as CreatedResult;
                 (createdReult.Value as ScreeningDataTable).Should().NotBeNull();
                 (createdReult.Value as ScreeningDataTable).Id.Should().NotBe(Guid.Empty);
@@ -75,7 +75,7 @@ namespace COVIDScreeningApi.Tests
 
         RepresentativeData GetRandomRepresentative()
         {
-            var reps = RepresentativeDataController.Get();
+            var reps = RepresentativeDataController.GetRepresentatives();
             return GetRandomRepresentative(reps);
         }
 
