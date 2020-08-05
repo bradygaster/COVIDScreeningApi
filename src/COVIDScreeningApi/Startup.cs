@@ -60,7 +60,10 @@ namespace COVIDScreeningApi
 
             app.UseAuthorization();
 
-            app.UseSwagger();
+            app.UseSwagger(c => 
+            {
+                c.SerializeAsV2 = true;
+            });
 
             if (env.IsDevelopment())
             {
